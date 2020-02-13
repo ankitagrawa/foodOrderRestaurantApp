@@ -106,7 +106,9 @@ public class OrderResource {
     public PublisherBuilder<String> sendFoodOrder() {
         return ReactiveStreams.generate(() -> {
             try {
-                return JsonbBuilder.create().toJson(foodQueue.take());
+            	Order singleOrder = foodQueue.take();
+            	System.out.println("Sending NEW Order " + singleOrder.getOrderID() + " to kitchen");
+                return JsonbBuilder.create().toJson(singleOrder);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 return null;
@@ -120,7 +122,9 @@ public class OrderResource {
     public PublisherBuilder<String> sendBeverageOrder() {
         return ReactiveStreams.generate(() -> {
             try {
-                return JsonbBuilder.create().toJson(beverageQueue.take());
+            	Order singleOrder = beverageQueue.take();
+            	System.out.println("Sending NEW Order " + singleOrder.getOrderID() + " to bar");
+                return JsonbBuilder.create().toJson(singleOrder);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 return null;

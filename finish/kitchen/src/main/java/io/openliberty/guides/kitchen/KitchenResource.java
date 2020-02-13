@@ -64,7 +64,7 @@ public class KitchenResource {
 
     private CompletionStage<Order> prepareOrder(Order order) {
         return CompletableFuture.supplyAsync(() -> {
-            prepare();
+            prepare(10);
             System.out.println(" Food Order in Progress... ");
             Order inProgressOrder = order.setStatus(Status.IN_PROGRESS);
             System.out.println(  " Order : " + jsonb.toJson(inProgressOrder) );
@@ -73,9 +73,9 @@ public class KitchenResource {
         }, executor);
     }
 
-    private void prepare() {
+    private void prepare(int inputVal) {
         try {
-            Thread.sleep((random.nextInt(3)+4) * 1000);
+            Thread.sleep((random.nextInt(10)+20) * 1000);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -86,7 +86,7 @@ public class KitchenResource {
         return ReactiveStreams.generate(() -> {
             try {
                 Order order = inProgress.take();
-                prepare();
+                prepare(20);
                 order.setStatus(Status.READY);
                 System.out.println(" Food Order Ready... ");
                 System.out.println(  " Order : " + jsonb.toJson(order) );
