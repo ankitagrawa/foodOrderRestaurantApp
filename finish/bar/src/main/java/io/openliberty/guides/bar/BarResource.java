@@ -47,15 +47,14 @@ public class BarResource {
     private BlockingQueue<Order> inProgress = new LinkedBlockingQueue<>();
     private Random random = new Random();
 
+    private static Jsonb jsonb = JsonbBuilder.create();
+
     private static Logger logger = Logger.getLogger(BarResource.class.getName());
 
-    
 
     @GET
     @Produces(MediaType.TEXT_PLAIN)
     public Response getStatus() {
-    	Jsonb jsonb = JsonbBuilder.create();
-    	System.out.println("jsonb: " + jsonb.getClass());
         return Response.ok().entity("The bar service is running...\n" 
                  + inProgress.size() + " orders in the queue.").build();
     }
@@ -63,7 +62,6 @@ public class BarResource {
     @Incoming("bevOrderConsume")
     @Outgoing("bevOrderPublishInter")
     public CompletionStage<String> initBeverageOrder(String newOrder) {
-    	Jsonb jsonb = JsonbBuilder.create();
         Order order = jsonb.fromJson(newOrder, Order.class);
         logger.info("Order " + order.getOrderID() + " received as NEW");
         logger.info(newOrder);
@@ -77,7 +75,6 @@ public class BarResource {
                 Order order = inProgress.take();
                 prepare();
                 order.setStatus(Status.READY);
-                Jsonb jsonb = JsonbBuilder.create();
                 String orderString = jsonb.toJson(order);
                 logger.info("Order " + order.getOrderID() + " is READY");
                 logger.info(orderString);
@@ -93,7 +90,6 @@ public class BarResource {
         return CompletableFuture.supplyAsync(() -> {
             prepare();
             Order inProgressOrder = order.setStatus(Status.IN_PROGRESS);
-            Jsonb jsonb = JsonbBuilder.create();
             logger.info("Order " + order.getOrderID() + " is IN PROGRESS");
             logger.info(jsonb.toJson(order));
             inProgress.add(inProgressOrder);
