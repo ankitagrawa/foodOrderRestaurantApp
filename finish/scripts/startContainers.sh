@@ -7,6 +7,7 @@ ORDER_SERVICE_PORT=9081
 SERVINGWINDOW_SERVICE_PORT=9082
 
 docker network create $NETWORK
+echo Starting containers...
 
 docker run -d \
   -e ALLOW_ANONYMOUS_LOGIN=yes \
@@ -65,3 +66,4 @@ docker run -d \
   restaurantbff:1.0-SNAPSHOT &
   
 wait
+echo Containers are fully started
